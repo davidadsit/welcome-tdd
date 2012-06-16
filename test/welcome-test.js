@@ -1,25 +1,36 @@
 var assert = buster.assert;
 
 buster.testCase("welcome tests", {
-  mockPrinter: null,
-
-  setUp: function () {
-    buster.assert(true) // buster bug
-  },  
-
-  tearDown: function () {
-    welcomePage.readUserName.restore()
-    mockPrinter.restore()
-  },  
 
   "sends welcome message to the printer": function () {
-    sinon.stub(welcomePage, "readUserName").returns("David")
-    mockPrinter = sinon.mock(printer)
+    this.stub(welcomePage, "readUserName").returns("David")
+    this.stub(printer, "print")
 
-    mockPrinter.expects("printWelcome").withArgs("David").once()
     welcome.greet()
 
-    mockPrinter.verify()
+    assert.calledWith(printer.print, "David")
+  }
+
+});
+
+buster.testCase("printer tests", {
+
+  "appends message to the DOM": function () {
+    stub = this.spy(jQuery.prototype, "append")
+
+    printer.print("This is a test")
+
+    assert.calledWith(stub.html, "This is a test")
+    stub.show.restore()
+  },
+
+  "shows the message": function () {
+    stub = this.spy(jQuery.prototype, "show")
+
+    printer.print("This is a test")
+
+    assert.called(stub.show)
+    stub.show.restore()
   }
 
 });
