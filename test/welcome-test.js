@@ -1,37 +1,39 @@
-var assert = buster.assert;
+"use strict";
 
-buster.testCase("welcome tests", {
+buster.testCase("Greeter", {
 
-  "sends welcome message to the printer": function () {
-    this.stub(welcomePage, "readUserName").returns("David")
-    this.stub(printer, "print")
-
-    welcome.greet()
-
-    assert.calledWith(printer.print, "David")
-  }
-
+    "uses voice to greet": function() {
+        var voice = this.stub({ say: function(){} });
+        var greeter = CreateGreeter(voice);
+        greeter.greet();
+        assert.called(voice.say);
+        assert.match(voice.say.firstCall.args[0], /Hello/);
+    }
 });
 
-buster.testCase("printer tests", {
+buster.testCase("Voice", {
 
-  "appends message to the DOM": function () {
-    stub = this.spy(jQuery.prototype, "append")
+//    "say calls console.log": function() {
+//        this.stub(console, "log");
+//        voice.say('sup');
+//        assert.calledWith(console.log, 'sup');
+//    },
+    
+    "appends message to the DOM": function () {
+        var domElement = this.stub({ html: function(){}, show: function(){} });
 
-    printer.print("This is a test")
+	var voice = CreateVoice(domElement)
+        voice.say("Hey there")
 
-    assert.calledWith(stub.html, "This is a test")
-    stub.show.restore()
-  },
+        assert.calledWith(domElement.html, "Hey there")
+    },
 
-  "shows the message": function () {
-    stub = this.spy(jQuery.prototype, "show")
+    "shows the message": function () {
+        var domElement = this.stub({ html: function(){}, show: function(){} });
 
-    printer.print("This is a test")
+	var voice = CreateVoice(domElement)
+        voice.say("This is a test")
 
-    assert.called(stub.show)
-    stub.show.restore()
-  }
-
+        assert.called(domElement.show)
+    }
 });
-
