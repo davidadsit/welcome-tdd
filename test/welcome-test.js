@@ -3,7 +3,7 @@
 buster.testCase("Greeter", {
 
     "uses voice to greet": function() {
-        var voice = this.stub({ say: function(){} });
+        var voice = this.stub({ say: function(){}, collapse: function(){} });
         var greeter = CreateGreeter(voice);
         greeter.greet();
         assert.called(voice.say);
