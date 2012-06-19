@@ -8,12 +8,35 @@ buster.testCase("Greeter", {
         greeter.greet();
         assert.called(voice);
         assert.match(voice.firstCall.args[0], /Hello/);
-    }
+    },
+
+    "greets a person": function() {
+        var voice = this.stub();
+        var greeter = CreateGreeter(voice);
+        greeter.greet("bob");
+        assert.called(voice);
+        assert.match(voice.firstCall.args[0], /bob/);
+    },
+
+    "sends a pearl of wisdom": function () {
+        var voice = this.stub();
+        var greeter = CreateGreeter(voice);
+        greeter.greet("bob");
+        greeter.pontificate();
+        assert.calledTwice(voice);
+        assert.match(voice.secondCall.args[0], /bob/);
+    
+    },
+
+    "pontificator acquires a saying from the guru",
+
+    "pontificator repeats the wisdom to the greeted"
 });
 
 buster.testCase("Voice", {
     "speaks to the DOM": function() {
         this.stub(jQuery.prototype, "html");
+        this.stub(jQuery.prototype, "show");
         voice('sup');
         assert.calledWith(jQuery.prototype.html, 'sup');
     },
